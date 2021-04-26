@@ -78,7 +78,7 @@ srDVjIT3LsvTqw==
 
 ## License
 
-(c) 2020 D4L data4life gGmbH / All rights reserved. Please refer to our [License](./LICENSE) for further details.
+(c) 2021 D4L data4life gGmbH / All rights reserved. Please refer to our [License](./LICENSE) for further details.
 
 ## Support and contributing
 
