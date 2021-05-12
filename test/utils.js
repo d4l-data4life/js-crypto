@@ -13,6 +13,8 @@ import {
 
     convertBlobToArrayBufferView,
 
+    convertArrayBufferToHexadecimal,
+
     mergeUint8Arrays,
 } from '../source/utils';
 
@@ -20,6 +22,7 @@ import {
     plainText,
     plainArray,
     plainBase64,
+    plainHexadecimal,
     plainObject,
     plainObjectArray,
     plainBlob,
@@ -73,6 +76,12 @@ describe('utils.js', () => {
         it('should merge ArrayBuffers properly', () => {
             const mergedArray = mergeUint8Arrays(plainArray, plainArray);
             expect(convertArrayBufferViewToString(mergedArray)).to.equal(plainText + plainText);
+        });
+    });
+
+    describe('convertArrayBufferToHexadecimal', () => {
+        it('should properly convert ArrayBuffer to hexadecimal', () => {
+            expect(convertArrayBufferToHexadecimal(plainArray)).to.deep.equal(plainHexadecimal);
         });
     });
 });

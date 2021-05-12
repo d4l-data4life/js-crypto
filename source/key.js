@@ -1,14 +1,11 @@
 import pbkdf2 from 'pbkdf2';
 
-import {
-    AES_CBC,
-    AES_GCM,
-    RSA_OAEP,
-} from './algorithms';
+import { AES_CBC, AES_GCM, RSA_OAEP } from './algorithms';
 import {
     isEdge,
     convertArrayBufferViewToBase64,
     convertArrayBufferViewToString,
+    convertArrayBufferToHexadecimal,
     convertBase64ToArrayBufferView,
 } from './utils';
 
@@ -19,6 +16,7 @@ const DECRYPT = 'decrypt';
 const KEYTYPES = {
     COMMON_KEY: 'ck',
     DATA_KEY: 'dk',
+    MAIN_KEY: 'mk',
     PASSWORD_KEY: 'pk',
     ATTACHMENT_KEY: 'ak',
     TAG_ENCRYPTION_KEY: 'tek',
@@ -45,7 +43,6 @@ const exportPublicKeyToSPKI = cryptoKey =>
         .then(SPKI => new Uint8Array(SPKI))
         .then(convertArrayBufferViewToBase64);
 
-
 /**
  * Export symmetric CryptoKey as base64 encoded raw key.
  *
@@ -56,7 +53,6 @@ const exportSymKeyToBase64 = cryptoKey =>
     crypto.subtle.exportKey('raw', cryptoKey)
         .then(byteKey => new Uint8Array(byteKey))
         .then(convertArrayBufferViewToBase64);
-
 
 /**
  * Export private CryptoKey to base64 encoded PKCS8.
@@ -69,6 +65,14 @@ const exportPrivateKeyToPKCS8 = cryptoKey =>
         .then(PKCS8 => new Uint8Array(PKCS8))
         .then(convertArrayBufferViewToBase64);
 
+/**
+ * Export symmetric CryptoKey as hexadecimal raw key
+ *
+ * @param {Object} cryptoKey - the cryptoKey that should be exported
+ * @returns {Promise} Resolves to the key as a hexadecimal encoded String.
+ */
+const exportSymKeyToHexadecimal = cryptoKey =>
+    crypto.subtle.exportKey('raw', cryptoKey).then(convertArrayBufferToHexadecimal);
 
 const exportKey = (key, type) => {
     switch (type) {
@@ -99,6 +103,8 @@ const exportKey = (key, type) => {
                 v: KEYVERSION,
                 pub: base64,
             }));
+    case KEYTYPES.MAIN_KEY:
+        return exportSymKeyToHexadecimal(key);
     default:
         throw new Error(`invalid key type: ${type}`);
     }
@@ -121,7 +127,6 @@ const importPrivateKeyFromPKCS8 = PKCS8 =>
         [DECRYPT],
     );
 
-
 /**
  * Import public CryptoKey from base64 encoded SPKI.
  *
@@ -139,7 +144,6 @@ const importPublicKeyFromSPKI = (SPKI) => {
     );
 };
 
-
 /**
  * Import from base64 encoded raw key to CryptoKey.
  * An imported key should never be extractable.
@@ -156,7 +160,6 @@ const importSymKeyFromBase64 = (base64Key, algorithm = AES_GCM) =>
         false,
         [ENCRYPT, DECRYPT],
     );
-
 
 const importKey = (key) => {
     switch (key.t) {
@@ -177,7 +180,6 @@ const importKey = (key) => {
         throw new Error('invalid key type');
     }
 };
-
 
 // GENERATE
 
@@ -264,7 +266,6 @@ const deriveKey = (masterKey, salt = new Uint8Array(16), algorithm = AES_GCM) =>
         .then(key => exportKey(key, KEYTYPES.PASSWORD_KEY));
 };
 
-
 /**
  * Creates a random public-private key pair
  * @param {String} type - type of the key pair 'A' for App, 'U' for User
@@ -288,24 +289,18 @@ const generateAsymKeyPair = type =>
         ]))
         .then(([publicKey, privateKey]) => ({ publicKey, privateKey }));
 
-
 export {
     deriveKey,
-
     generateAsymKeyPair,
     generateSymKey,
-
     importKey,
     exportKey,
-
     importSymKeyFromBase64,
     exportSymKeyToBase64,
-
+    exportSymKeyToHexadecimal,
     importPrivateKeyFromPKCS8,
     exportPrivateKeyToPKCS8,
-
     importPublicKeyFromSPKI,
     exportPublicKeyToSPKI,
-
     KEYTYPES,
 };

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.KEYTYPES = exports.exportPublicKeyToSPKI = exports.importPublicKeyFromSPKI = exports.exportPrivateKeyToPKCS8 = exports.importPrivateKeyFromPKCS8 = exports.exportSymKeyToBase64 = exports.importSymKeyFromBase64 = exports.exportKey = exports.importKey = exports.generateSymKey = exports.generateAsymKeyPair = exports.deriveKey = void 0;
+exports.KEYTYPES = exports.exportPublicKeyToSPKI = exports.importPublicKeyFromSPKI = exports.exportPrivateKeyToPKCS8 = exports.importPrivateKeyFromPKCS8 = exports.exportSymKeyToHexadecimal = exports.exportSymKeyToBase64 = exports.importSymKeyFromBase64 = exports.exportKey = exports.importKey = exports.generateSymKey = exports.generateAsymKeyPair = exports.deriveKey = void 0;
 
 require("core-js/modules/es7.symbol.async-iterator");
 
@@ -43,6 +43,7 @@ var DECRYPT = 'decrypt';
 var KEYTYPES = {
   COMMON_KEY: 'ck',
   DATA_KEY: 'dk',
+  MAIN_KEY: 'mk',
   PASSWORD_KEY: 'pk',
   ATTACHMENT_KEY: 'ak',
   TAG_ENCRYPTION_KEY: 'tek',
@@ -100,8 +101,21 @@ var exportPrivateKeyToPKCS8 = function exportPrivateKeyToPKCS8(cryptoKey) {
     return new Uint8Array(PKCS8);
   }).then(_utils.convertArrayBufferViewToBase64);
 };
+/**
+ * Export symmetric CryptoKey as hexadecimal raw key
+ *
+ * @param {Object} cryptoKey - the cryptoKey that should be exported
+ * @returns {Promise} Resolves to the key as a hexadecimal encoded String.
+ */
+
 
 exports.exportPrivateKeyToPKCS8 = exportPrivateKeyToPKCS8;
+
+var exportSymKeyToHexadecimal = function exportSymKeyToHexadecimal(cryptoKey) {
+  return crypto.subtle.exportKey('raw', cryptoKey).then(_utils.convertArrayBufferToHexadecimal);
+};
+
+exports.exportSymKeyToHexadecimal = exportSymKeyToHexadecimal;
 
 var exportKey = function exportKey(key, type) {
   switch (type) {
@@ -137,6 +151,9 @@ var exportKey = function exportKey(key, type) {
           pub: base64
         };
       });
+
+    case KEYTYPES.MAIN_KEY:
+      return exportSymKeyToHexadecimal(key);
 
     default:
       throw new Error("invalid key type: ".concat(type));

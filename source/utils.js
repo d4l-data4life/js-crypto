@@ -37,7 +37,6 @@ const convertBlobToArrayBufferView = blob =>
         fileReader.readAsArrayBuffer(blob);
     });
 
-
 const mergeUint8Arrays = (arr1, arr2) => {
     const merge = new Uint8Array(arr1.length + arr2.length);
     merge.set(arr1);
@@ -45,19 +44,28 @@ const mergeUint8Arrays = (arr1, arr2) => {
     return merge;
 };
 
+/**
+ * converts an ArrayBuffer to a hexadecimal string
+ *
+ * @param {ArrayBuffer} buffer
+ * @returns {String} - hexadecimal representation of the ArrayBuffer
+ *
+ */
+const convertArrayBufferToHexadecimal = buffer => Array.from(new Uint8Array(buffer))
+    .map(x => x.toString(16).padStart(2, '0'))
+    .join('');
+
 // this does not affect Chrome-based Edge because its user agent only contains "Edg"
 const isEdge = window.navigator.userAgent.indexOf('Edge') > -1;
 
 export {
     convertStringToArrayBufferView,
     convertArrayBufferViewToString,
-
     convertBase64ToArrayBufferView,
     convertArrayBufferViewToBase64,
-
+    convertArrayBufferToHexadecimal,
     convertObjectToArrayBufferView,
     convertBlobToArrayBufferView,
-
     mergeUint8Arrays,
     isEdge,
 };
