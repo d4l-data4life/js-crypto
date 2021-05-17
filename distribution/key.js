@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.KEYTYPES = exports.exportPublicKeyToSPKI = exports.importPublicKeyFromSPKI = exports.exportPrivateKeyToPKCS8 = exports.importPrivateKeyFromPKCS8 = exports.exportSymKeyToHexadecimal = exports.exportSymKeyToBase64 = exports.importSymKeyFromBase64 = exports.exportKey = exports.importKey = exports.generateSymKey = exports.generateAsymKeyPair = exports.deriveKey = void 0;
+exports.KEYTYPES = exports.exportPublicKeyToSPKI = exports.importPublicKeyFromSPKI = exports.exportPrivateKeyToPKCS8 = exports.importPrivateKeyFromPKCS8 = exports.importSymKeyFromHexadecimal = exports.exportSymKeyToHexadecimal = exports.exportSymKeyToBase64 = exports.importSymKeyFromBase64 = exports.exportKey = exports.importKey = exports.generateSymKey = exports.generateAsymKeyPair = exports.deriveKey = void 0;
 
 require("core-js/modules/es7.symbol.async-iterator");
 
@@ -210,8 +210,24 @@ var importSymKeyFromBase64 = function importSymKeyFromBase64(base64Key) {
   var algorithm = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _algorithms.AES_GCM;
   return crypto.subtle.importKey('raw', (0, _utils.convertBase64ToArrayBufferView)(base64Key), algorithm, false, [ENCRYPT, DECRYPT]);
 };
+/**
+ * Import from hexadecimal encoded raw key to CryptoKey.
+ * An imported key should never be extractable.
+ *
+ * @param {String} hexadecimal - hexadecimal encoded key
+ * @param algorithm - cryptographic algorithm
+ * @returns {Promise} Resolves to the key as a CryptoKey.
+ */
+
 
 exports.importSymKeyFromBase64 = importSymKeyFromBase64;
+
+var importSymKeyFromHexadecimal = function importSymKeyFromHexadecimal(hexadecimal) {
+  var algorithm = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _algorithms.AES_GCM;
+  crypto.subtle.importKey('raw', (0, _utils.convertHexadecimalToArrayBuffer)(hexadecimal), algorithm, false, [ENCRYPT, DECRYPT]);
+};
+
+exports.importSymKeyFromHexadecimal = importSymKeyFromHexadecimal;
 
 var importKey = function importKey(key) {
   switch (key.t) {
@@ -231,6 +247,9 @@ var importKey = function importKey(key) {
     case KEYTYPES.USER.PUBLIC_KEY:
     case KEYTYPES.APP.PUBLIC_KEY:
       return importPublicKeyFromSPKI(key.pub);
+
+    case KEYTYPES.MAIN_KEY:
+      return importSymKeyFromHexadecimal(key.sym);
 
     default:
       throw new Error('invalid key type');

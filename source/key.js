@@ -7,6 +7,7 @@ import {
     convertArrayBufferViewToString,
     convertArrayBufferToHexadecimal,
     convertBase64ToArrayBufferView,
+    convertHexadecimalToArrayBuffer,
 } from './utils';
 
 const KEYVERSION = 1;
@@ -165,6 +166,23 @@ const importSymKeyFromBase64 = (base64Key, algorithm = AES_GCM) =>
         [ENCRYPT, DECRYPT],
     );
 
+/**
+ * Import from hexadecimal encoded raw key to CryptoKey.
+ * An imported key should never be extractable.
+ *
+ * @param {String} hexadecimal - hexadecimal encoded key
+ * @param algorithm - cryptographic algorithm
+ * @returns {Promise} Resolves to the key as a CryptoKey.
+ */
+const importSymKeyFromHexadecimal = (hexadecimal, algorithm = AES_GCM) =>
+    crypto.subtle.importKey(
+        'raw',
+        convertHexadecimalToArrayBuffer(hexadecimal),
+        algorithm,
+        false,
+        [ENCRYPT, DECRYPT],
+    );
+
 const importKey = (key) => {
     switch (key.t) {
     case KEYTYPES.COMMON_KEY:
@@ -180,6 +198,8 @@ const importKey = (key) => {
     case KEYTYPES.USER.PUBLIC_KEY:
     case KEYTYPES.APP.PUBLIC_KEY:
         return importPublicKeyFromSPKI(key.pub);
+    case KEYTYPES.MAIN_KEY:
+        return importSymKeyFromHexadecimal(key.sym);
     default:
         throw new Error('invalid key type');
     }
@@ -302,6 +322,7 @@ export {
     importSymKeyFromBase64,
     exportSymKeyToBase64,
     exportSymKeyToHexadecimal,
+    importSymKeyFromHexadecimal,
     importPrivateKeyFromPKCS8,
     exportPrivateKeyToPKCS8,
     importPublicKeyFromSPKI,
