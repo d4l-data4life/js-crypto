@@ -96,14 +96,16 @@ describe('utils.js', () => {
             try {
                 convertHexadecimalToArrayBuffer(123);
             } catch (error) {
+                expect(error.name).to.eql('TypeError');
                 expect(error.message).to.eql('Expected input to be a string');
             }
         });
 
-        it('should return a TypeError if the input is not a string', () => {
+        it('should return a RangeError if the input is not an even number of characters', () => {
             try {
                 convertHexadecimalToArrayBuffer(plainHexadecimal.substr(1));
             } catch (error) {
+                expect(error.name).to.eql('RangeError');
                 expect(error.message).to.eql('Expected string to be an even number of characters');
             }
         });
