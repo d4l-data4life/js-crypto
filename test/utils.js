@@ -91,5 +91,21 @@ describe('utils.js', () => {
             expect(convertHexadecimalToArrayBuffer(plainHexadecimal))
                 .to.deep.equal(plainArray.buffer);
         });
+
+        it('should return a TypeError if the input is not a string', () => {
+            try {
+                convertHexadecimalToArrayBuffer(123);
+            } catch (error) {
+                expect(error.message).to.eql('Expected input to be a string');
+            }
+        });
+
+        it('should return a TypeError if the input is not a string', () => {
+            try {
+                convertHexadecimalToArrayBuffer(plainHexadecimal.substr(1));
+            } catch (error) {
+                expect(error.message).to.eql('Expected string to be an even number of characters');
+            }
+        });
     });
 });
