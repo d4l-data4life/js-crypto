@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.isEdge = exports.mergeUint8Arrays = exports.convertBlobToArrayBufferView = exports.convertObjectToArrayBufferView = exports.convertArrayBufferToHexadecimal = exports.convertArrayBufferViewToBase64 = exports.convertBase64ToArrayBufferView = exports.convertArrayBufferViewToString = exports.convertStringToArrayBufferView = void 0;
+exports.isEdge = exports.mergeUint8Arrays = exports.convertBlobToArrayBufferView = exports.convertObjectToArrayBufferView = exports.convertHexadecimalToArrayBuffer = exports.convertArrayBufferToHexadecimal = exports.convertArrayBufferViewToBase64 = exports.convertBase64ToArrayBufferView = exports.convertArrayBufferViewToString = exports.convertStringToArrayBufferView = void 0;
 
 require("core-js/modules/es6.regexp.to-string");
 
@@ -91,9 +91,34 @@ var convertArrayBufferToHexadecimal = function convertArrayBufferToHexadecimal(b
   return Array.from(new Uint8Array(buffer)).map(function (x) {
     return x.toString(16).padStart(2, '0');
   }).join('');
-}; // this does not affect Chrome-based Edge because its user agent only contains "Edg"
+};
+/**
+ * converts a hexadecimal string to an ArrayBuffer
+ *
+ * @param {String} hexadecimal
+ * @returns {Uint8Array} - the bytes of the hexadecimal string
+ *
+ */
 
 
 exports.convertArrayBufferToHexadecimal = convertArrayBufferToHexadecimal;
+
+var convertHexadecimalToArrayBuffer = function convertHexadecimalToArrayBuffer(hexadecimal) {
+  if (typeof hexadecimal !== 'string') {
+    throw new TypeError('Expected input to be a string');
+  }
+
+  if (hexadecimal.length % 2 !== 0) {
+    throw new RangeError('Expected string to be an even number of characters');
+  }
+
+  var output = new Uint8Array(Math.ceil(hexadecimal.length / 2)).map(function (x, i) {
+    return parseInt(hexadecimal.substr(i * 2, 2), 16);
+  });
+  return output.buffer;
+}; // this does not affect Chrome-based Edge because its user agent only contains "Edg"
+
+
+exports.convertHexadecimalToArrayBuffer = convertHexadecimalToArrayBuffer;
 var isEdge = window.navigator.userAgent.indexOf('Edge') > -1;
 exports.isEdge = isEdge;

@@ -153,7 +153,13 @@ var exportKey = function exportKey(key, type) {
       });
 
     case KEYTYPES.MAIN_KEY:
-      return exportSymKeyToHexadecimal(key);
+      return exportSymKeyToHexadecimal(key).then(function (hexadecimal) {
+        return {
+          t: type,
+          v: KEYVERSION,
+          sym: hexadecimal
+        };
+      });
 
     default:
       throw new Error("invalid key type: ".concat(type));

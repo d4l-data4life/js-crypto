@@ -55,6 +55,29 @@ const convertArrayBufferToHexadecimal = buffer => Array.from(new Uint8Array(buff
     .map(x => x.toString(16).padStart(2, '0'))
     .join('');
 
+
+/**
+ * converts a hexadecimal string to an ArrayBuffer
+ *
+ * @param {String} hexadecimal
+ * @returns {Uint8Array} - the bytes of the hexadecimal string
+ *
+ */
+const convertHexadecimalToArrayBuffer = (hexadecimal) => {
+    if (typeof hexadecimal !== 'string') {
+        throw new TypeError('Expected input to be a string');
+    }
+
+    if ((hexadecimal.length % 2) !== 0) {
+        throw new RangeError('Expected string to be an even number of characters');
+    }
+
+    const output = new Uint8Array(Math.ceil(hexadecimal.length / 2))
+        .map((x, i) => parseInt(hexadecimal.substr(i * 2, 2), 16));
+
+    return output.buffer;
+};
+
 // this does not affect Chrome-based Edge because its user agent only contains "Edg"
 const isEdge = window.navigator.userAgent.indexOf('Edge') > -1;
 
@@ -64,6 +87,7 @@ export {
     convertBase64ToArrayBufferView,
     convertArrayBufferViewToBase64,
     convertArrayBufferToHexadecimal,
+    convertHexadecimalToArrayBuffer,
     convertObjectToArrayBufferView,
     convertBlobToArrayBufferView,
     mergeUint8Arrays,

@@ -14,6 +14,7 @@ import {
     convertBlobToArrayBufferView,
 
     convertArrayBufferToHexadecimal,
+    convertHexadecimalToArrayBuffer,
 
     mergeUint8Arrays,
 } from '../source/utils';
@@ -82,6 +83,13 @@ describe('utils.js', () => {
     describe('convertArrayBufferToHexadecimal', () => {
         it('should properly convert ArrayBuffer to hexadecimal', () => {
             expect(convertArrayBufferToHexadecimal(plainArray)).to.deep.equal(plainHexadecimal);
+        });
+    });
+
+    describe('convertHexadecimalToArrayBuffer', () => {
+        it('should properly convert hexadecimal to ArrayBuffer', () => {
+            expect(convertHexadecimalToArrayBuffer(plainHexadecimal))
+                .to.deep.equal(plainArray.buffer);
         });
     });
 });

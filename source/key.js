@@ -104,7 +104,11 @@ const exportKey = (key, type) => {
                 pub: base64,
             }));
     case KEYTYPES.MAIN_KEY:
-        return exportSymKeyToHexadecimal(key);
+        return exportSymKeyToHexadecimal(key).then(hexadecimal => ({
+            t: type,
+            v: KEYVERSION,
+            sym: hexadecimal,
+        }));
     default:
         throw new Error(`invalid key type: ${type}`);
     }
