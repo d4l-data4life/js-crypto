@@ -180,7 +180,7 @@ const importSymKeyFromHexadecimal = (hexadecimal, algorithm = AES_GCM) =>
         convertHexadecimalToArrayBuffer(hexadecimal),
         algorithm,
         false,
-        [ENCRYPT, DECRYPT],
+        [DECRYPT],
     );
 
 const importKey = (key) => {
