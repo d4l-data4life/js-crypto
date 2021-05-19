@@ -14,6 +14,18 @@ const masterKey = {
     sym: 'nlBTQFK5rgG3YviH1xXckALC77mZ5IPe+FEGSIBF8KI=',
 };
 
+const symMainKey = {
+    t: 'mk',
+    v: 1,
+    sym: '498f0615b8a30b14da0bac84b52d41655fcc6876f20f0929e6cef74d4ce63082',
+};
+const symMainCryptoKey = {
+    type: 'secret',
+    extractable: false,
+    algorithm: { name: 'AES-GCM', length: 256 },
+    usages: ['decrypt'],
+};
+
 const symCommonKey = {
     t: 'ck',
     v: 1,
@@ -114,6 +126,8 @@ export {
     defaultMasterKey,
     IV,
     masterKey,
+    symMainKey,
+    symMainCryptoKey,
     symCommonKey,
     symCommonCryptoKey,
     symCommonKeyJWK,

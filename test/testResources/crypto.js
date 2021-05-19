@@ -2,6 +2,7 @@ const plainText = 'Hęłlø črüėl wōrlđ';
 const plainArray = new Uint8Array([72, 196, 153, 197, 130, 108, 195, 184, 32, 196, 141, 114, 195,
     188, 196, 151, 108, 32, 119, 197, 141, 114, 108, 196, 145]);
 const plainBase64 = 'SMSZxYJsw7ggxI1yw7zEl2wgd8WNcmzEkQ==';
+const plainHexadecimal = '48c499c5826cc3b820c48d72c3bcc4976c2077c58d726cc491';
 
 // plainText encrypted with tagEncryptionKey
 const cipherTextArray = new Uint8Array([171, 91, 91, 132, 110, 103, 148, 58, 71, 118, 97, 228, 246,
@@ -51,6 +52,7 @@ export {
     plainText,
     plainArray,
     plainBase64,
+    plainHexadecimal,
     cipherTextArray,
     cipherTextBase64,
     plainObject,

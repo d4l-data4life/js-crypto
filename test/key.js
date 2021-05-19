@@ -19,6 +19,8 @@ import {
     masterKeyArray,
     IV,
     masterKey,
+    symMainKey,
+    symMainCryptoKey,
     symCommonKey,
     symCommonCryptoKey,
     symCommonKeyJWK,
@@ -175,6 +177,19 @@ describe('key.js', () => {
                     expect(JSON.stringify(cryptoKey.algorithm))
                         .to.deep.equal(JSON.stringify(asymPrivateCryptoKey.algorithm));
                     expect(cryptoKey.usages).to.deep.equal(asymPrivateCryptoKey.usages);
+
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('is able to import a main key (sym, AES-GCM)', (done) => {
+            importKey(symMainKey)
+                .then((cryptoKey) => {
+                    expect(cryptoKey.type).to.equal(symMainCryptoKey.type);
+                    expect(cryptoKey.extractable).to.equal(symMainCryptoKey.extractable);
+                    expect(cryptoKey.algorithm).to.deep.equal(symMainCryptoKey.algorithm);
+                    expect(cryptoKey.usages).to.deep.equal(symMainCryptoKey.usages);
 
                     done();
                 })

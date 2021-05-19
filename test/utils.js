@@ -13,6 +13,9 @@ import {
 
     convertBlobToArrayBufferView,
 
+    convertArrayBufferToHexadecimal,
+    convertHexadecimalToArrayBuffer,
+
     mergeUint8Arrays,
 } from '../source/utils';
 
@@ -20,6 +23,7 @@ import {
     plainText,
     plainArray,
     plainBase64,
+    plainHexadecimal,
     plainObject,
     plainObjectArray,
     plainBlob,
@@ -73,6 +77,37 @@ describe('utils.js', () => {
         it('should merge ArrayBuffers properly', () => {
             const mergedArray = mergeUint8Arrays(plainArray, plainArray);
             expect(convertArrayBufferViewToString(mergedArray)).to.equal(plainText + plainText);
+        });
+    });
+
+    describe('convertArrayBufferToHexadecimal', () => {
+        it('should properly convert ArrayBuffer to hexadecimal', () => {
+            expect(convertArrayBufferToHexadecimal(plainArray)).to.deep.equal(plainHexadecimal);
+        });
+    });
+
+    describe('convertHexadecimalToArrayBuffer', () => {
+        it('should properly convert hexadecimal to ArrayBuffer', () => {
+            expect(convertHexadecimalToArrayBuffer(plainHexadecimal))
+                .to.deep.equal(plainArray.buffer);
+        });
+
+        it('should return a TypeError if the input is not a string', () => {
+            try {
+                convertHexadecimalToArrayBuffer(123);
+            } catch (error) {
+                expect(error.name).to.eql('TypeError');
+                expect(error.message).to.eql('Expected input to be a string');
+            }
+        });
+
+        it('should return a RangeError if the input is not an even number of characters', () => {
+            try {
+                convertHexadecimalToArrayBuffer(plainHexadecimal.substr(1));
+            } catch (error) {
+                expect(error.name).to.eql('RangeError');
+                expect(error.message).to.eql('Expected string to be an even number of characters');
+            }
         });
     });
 });

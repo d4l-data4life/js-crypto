@@ -3,7 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.isEdge = exports.mergeUint8Arrays = exports.convertBlobToArrayBufferView = exports.convertObjectToArrayBufferView = exports.convertArrayBufferViewToBase64 = exports.convertBase64ToArrayBufferView = exports.convertArrayBufferViewToString = exports.convertStringToArrayBufferView = void 0;
+exports.isEdge = exports.mergeUint8Arrays = exports.convertBlobToArrayBufferView = exports.convertObjectToArrayBufferView = exports.convertHexadecimalToArrayBuffer = exports.convertArrayBufferToHexadecimal = exports.convertArrayBufferViewToBase64 = exports.convertBase64ToArrayBufferView = exports.convertArrayBufferViewToString = exports.convertStringToArrayBufferView = void 0;
+
+require("core-js/modules/es6.regexp.to-string");
+
+require("core-js/modules/es7.string.pad-start");
+
+require("core-js/modules/es6.string.iterator");
+
+require("core-js/modules/es6.array.from");
 
 require("core-js/modules/es6.typed.uint8-array");
 
@@ -67,9 +75,50 @@ var mergeUint8Arrays = function mergeUint8Arrays(arr1, arr2) {
   merge.set(arr1);
   merge.set(arr2, arr1.length);
   return merge;
-}; // this does not affect Chrome-based Edge because its user agent only contains "Edg"
+};
+/**
+ * converts an ArrayBuffer to a hexadecimal string
+ *
+ * @param {ArrayBuffer} buffer
+ * @returns {String} - hexadecimal representation of the ArrayBuffer
+ *
+ */
 
 
 exports.mergeUint8Arrays = mergeUint8Arrays;
+
+var convertArrayBufferToHexadecimal = function convertArrayBufferToHexadecimal(buffer) {
+  return Array.from(new Uint8Array(buffer)).map(function (x) {
+    return x.toString(16).padStart(2, '0');
+  }).join('');
+};
+/**
+ * converts a hexadecimal string to an ArrayBuffer
+ *
+ * @param {String} hexadecimal
+ * @returns {Uint8Array} - the bytes of the hexadecimal string
+ *
+ */
+
+
+exports.convertArrayBufferToHexadecimal = convertArrayBufferToHexadecimal;
+
+var convertHexadecimalToArrayBuffer = function convertHexadecimalToArrayBuffer(hexadecimal) {
+  if (typeof hexadecimal !== 'string') {
+    throw new TypeError('Expected input to be a string');
+  }
+
+  if (hexadecimal.length % 2 !== 0) {
+    throw new RangeError('Expected string to be an even number of characters');
+  }
+
+  var output = new Uint8Array(Math.ceil(hexadecimal.length / 2)).map(function (x, i) {
+    return parseInt(hexadecimal.substr(i * 2, 2), 16);
+  });
+  return output.buffer;
+}; // this does not affect Chrome-based Edge because its user agent only contains "Edg"
+
+
+exports.convertHexadecimalToArrayBuffer = convertHexadecimalToArrayBuffer;
 var isEdge = window.navigator.userAgent.indexOf('Edge') > -1;
 exports.isEdge = isEdge;

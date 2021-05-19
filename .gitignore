@@ -6,4 +6,5 @@ coverage/
 
 # ide
 .idea
+.vscode
 
