@@ -23,7 +23,7 @@ const symMainCryptoKey = {
     type: 'secret',
     extractable: false,
     algorithm: { name: 'AES-GCM', length: 256 },
-    usages: ['decrypt'],
+    usages: ['encrypt', 'decrypt'],
 };
 
 const symCommonKey = {
