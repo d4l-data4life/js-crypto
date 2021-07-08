@@ -168,7 +168,6 @@ const importSymKeyFromBase64 = (base64Key, algorithm = AES_GCM) =>
 
 /**
  * Import from hexadecimal encoded raw key to CryptoKey.
- * An imported key should never be extractable.
  *
  * @param {String} hexadecimal - hexadecimal encoded key
  * @param algorithm - cryptographic algorithm
@@ -179,7 +178,7 @@ const importSymKeyFromHexadecimal = (hexadecimal, algorithm = AES_GCM) =>
         'raw',
         convertHexadecimalToArrayBuffer(hexadecimal),
         algorithm,
-        false,
+        true,
         [DECRYPT, ENCRYPT],
     );
 
