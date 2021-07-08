@@ -224,7 +224,7 @@ exports.importSymKeyFromBase64 = importSymKeyFromBase64;
 
 var importSymKeyFromHexadecimal = function importSymKeyFromHexadecimal(hexadecimal) {
   var algorithm = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _algorithms.AES_GCM;
-  return crypto.subtle.importKey('raw', (0, _utils.convertHexadecimalToArrayBuffer)(hexadecimal), algorithm, false, [DECRYPT]);
+  return crypto.subtle.importKey('raw', (0, _utils.convertHexadecimalToArrayBuffer)(hexadecimal), algorithm, false, [DECRYPT, ENCRYPT]);
 };
 
 exports.importSymKeyFromHexadecimal = importSymKeyFromHexadecimal;
