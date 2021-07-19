@@ -30,7 +30,7 @@ describe('index.js', () => {
             'importPrivateKeyFromPKCS8',
             'importPublicKeyFromSPKI',
             'importSymKeyFromBase64',
-            'keyTypes',
+            'D4LKeyTypes',
             'newDerivationSalt',
             'symDecrypt',
             'symDecryptObject',

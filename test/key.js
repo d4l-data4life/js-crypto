@@ -9,7 +9,7 @@ import {
     generateSymKey,
     importKey,
     exportKey,
-    keyTypes,
+    D4LKeyTypes,
 
     algorithms,
 } from '../source/index';
@@ -71,7 +71,7 @@ describe('key.js', () => {
 
     describe('generateAsymKeyPair', () => {
         it('should generate a keypair in the GC key format', (done) => {
-            generateAsymKeyPair(keyTypes.USER)
+            generateAsymKeyPair(D4LKeyTypes.USER)
                 .then(({ publicKey, privateKey }) => {
                     expect(Object.keys(publicKey)).to.deep.equal(['t', 'v', 'pub']);
                     expect(publicKey.t).to.equal('upub');
@@ -85,8 +85,8 @@ describe('key.js', () => {
 
         it('should behave non deterministically', (done) => {
             Promise.all([
-                generateAsymKeyPair(keyTypes.USER),
-                generateAsymKeyPair(keyTypes.USER),
+                generateAsymKeyPair(D4LKeyTypes.USER),
+                generateAsymKeyPair(D4LKeyTypes.USER),
             ])
                 .then((keyPairs) => {
                     expect(keyPairs[0]).not.to.deep.equal(keyPairs[1]);
@@ -99,7 +99,7 @@ describe('key.js', () => {
 
     describe('generateSymKey', () => {
         it('should generate a key in the GC key format', (done) => {
-            generateSymKey(keyTypes.COMMON_KEY)
+            generateSymKey(D4LKeyTypes.COMMON_KEY)
                 .then((key) => {
                     expect(Object.keys(key)).to.deep.equal(['t', 'v', 'sym']);
                     done();
@@ -109,8 +109,8 @@ describe('key.js', () => {
 
         it('should behave non deterministically', (done) => {
             Promise.all([
-                generateSymKey(keyTypes.COMMON_KEY),
-                generateSymKey(keyTypes.COMMON_KEY),
+                generateSymKey(D4LKeyTypes.COMMON_KEY),
+                generateSymKey(D4LKeyTypes.COMMON_KEY),
             ])
                 .then((keys) => {
                     expect(keys[0]).not.to.deep.equal(keys[1]);
@@ -121,7 +121,7 @@ describe('key.js', () => {
         });
 
         it('should generate a key in the GC key format using AES-CBC', (done) => {
-            generateSymKey(keyTypes.TAG_ENCRYPTION_KEY, algorithms.AES_CBC)
+            generateSymKey(D4LKeyTypes.TAG_ENCRYPTION_KEY, algorithms.AES_CBC)
                 .then((key) => {
                     expect(Object.keys(key)).to.deep.equal(['t', 'v', 'sym']);
                     done();
@@ -200,7 +200,7 @@ describe('key.js', () => {
     describe('exportKey', () => {
         it('is able to export a commonKey (sym, AES-GCM)', (done) => {
             crypto.subtle.importKey('jwk', symCommonKeyJWK, algorithms.AES_GCM, true, ['encrypt', 'decrypt'])
-                .then(cryptoKey => exportKey(cryptoKey, keyTypes.COMMON_KEY))
+                .then(cryptoKey => exportKey(cryptoKey, D4LKeyTypes.COMMON_KEY))
                 .then((GCKey) => {
                     expect(GCKey).to.deep.equal(symCommonKey);
 
@@ -211,7 +211,7 @@ describe('key.js', () => {
 
         it('is able to import a tagEncryptionKey (sym, AES-CBC)', (done) => {
             crypto.subtle.importKey('jwk', symTagKeyJWK, algorithms.AES_CBC, true, ['encrypt', 'decrypt'])
-                .then(cryptoKey => exportKey(cryptoKey, keyTypes.TAG_ENCRYPTION_KEY))
+                .then(cryptoKey => exportKey(cryptoKey, D4LKeyTypes.TAG_ENCRYPTION_KEY))
                 .then((GCKey) => {
                     expect(GCKey).to.deep.equal(symTagKey);
 
@@ -222,7 +222,7 @@ describe('key.js', () => {
 
         it('is able to import a public userKey (asym)', (done) => {
             crypto.subtle.importKey('jwk', asymPublicJWK, algorithms.RSA_OAEP, true, ['encrypt'])
-                .then(cryptoKey => exportKey(cryptoKey, keyTypes.USER.PUBLIC_KEY))
+                .then(cryptoKey => exportKey(cryptoKey, D4LKeyTypes.USER.PUBLIC_KEY))
                 .then((GCKey) => {
                     expect(GCKey).to.deep.equal(asymUserPublicKey);
                     done();
@@ -232,7 +232,7 @@ describe('key.js', () => {
 
         it('is able to export a private userKey (asym)', (done) => {
             crypto.subtle.importKey('jwk', asymPrivateJWK, algorithms.RSA_OAEP, true, ['decrypt'])
-                .then(cryptoKey => exportKey(cryptoKey, keyTypes.USER.PRIVATE_KEY))
+                .then(cryptoKey => exportKey(cryptoKey, D4LKeyTypes.USER.PRIVATE_KEY))
                 .then((GCKey) => {
                     expect(GCKey).to.deep.equal(asymUserPrivateKey);
                     done();
