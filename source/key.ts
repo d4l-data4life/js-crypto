@@ -55,6 +55,7 @@ export type D4LKeyPublic = {
 
 export type D4LKey = D4LKeySym | D4LKeyPrivate | D4LKeyPublic
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
 export const isD4LKey = (key: any): key is D4LKey => key.t && key.v && (key.priv || key.pub || key.sym);
 
 export type D4LAsymKeysPair = {

@@ -33,6 +33,8 @@ const convertBlobToArrayBufferView = async (blob: Blob): Promise<Uint8Array> =>
     new Promise((resolve) => {
         const fileReader = new FileReader();
         fileReader.onload = (event) => {
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             resolve(new Uint8Array(event.target.result as any)); // TODO check the type mismatch here, remove "any"
         };
         fileReader.readAsArrayBuffer(blob);
