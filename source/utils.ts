@@ -11,7 +11,7 @@ const textDecoder = new TextDecoder();
  * @returns {b64} - the base64 representation of the bytes
  *
  */
-const convertArrayBufferViewToBase64 = (bytes: Uint8Array) : b64 => base64js.fromByteArray(bytes);
+const convertArrayBufferViewToBase64 = (bytes: Uint8Array): b64 => base64js.fromByteArray(bytes);
 
 /**
  * converts a base64 string to a Uint8Array
@@ -20,16 +20,16 @@ const convertArrayBufferViewToBase64 = (bytes: Uint8Array) : b64 => base64js.fro
  * @returns {Uint8Array} - the bytes of the base64 string
  *
  */
-const convertBase64ToArrayBufferView = (value: b64) : Uint8Array => base64js.toByteArray(value);
+const convertBase64ToArrayBufferView = (value: b64): Uint8Array => base64js.toByteArray(value);
 
-const convertStringToArrayBufferView = (value: string) : Uint8Array => textEncoder.encode(value);
+const convertStringToArrayBufferView = (value: string): Uint8Array => textEncoder.encode(value);
 
-const convertObjectToArrayBufferView = (object: object) : Uint8Array =>
+const convertObjectToArrayBufferView = (object: Record<string, unknown>): Uint8Array =>
     convertStringToArrayBufferView(JSON.stringify(object));
 
-const convertArrayBufferViewToString = (bytes: Uint8Array) : string => textDecoder.decode(bytes);
+const convertArrayBufferViewToString = (bytes: Uint8Array): string => textDecoder.decode(bytes);
 
-const convertBlobToArrayBufferView = async (blob: Blob) : Promise<Uint8Array> =>
+const convertBlobToArrayBufferView = async (blob: Blob): Promise<Uint8Array> =>
     new Promise((resolve) => {
         const fileReader = new FileReader();
         fileReader.onload = (event) => {

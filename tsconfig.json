@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "allowUnreachableCode": false,
+        "declaration": false,
+        "experimentalDecorators": true,
+        "lib": [
+            "es6",
+            "dom"
+        ],
+        "moduleResolution": "node",
+        "module": "esnext",
+        "target": "es2017",
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "resolveJsonModule": true,
+    },
+    "include": [
+        "source"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

@@ -47,7 +47,7 @@ const symEncryptString = (d4lKey: D4LKey, string: string): Promise<b64> =>
     symEncrypt(d4lKey, convertStringToArrayBufferView(string))
         .then(convertArrayBufferViewToBase64);
 
-const symEncryptObject = (d4lKey: D4LKey, object: object): Promise<b64> =>
+const symEncryptObject = (d4lKey: D4LKey, object: Record<string, unknown>): Promise<b64> =>
     symEncryptString(d4lKey, JSON.stringify(object));
 
 const symEncryptBlob = (d4lKey: D4LKey, blob: Blob): Promise<Uint8Array> =>
@@ -80,7 +80,7 @@ const symDecryptString = async (d4lKey: D4LKey, base64String: b64): Promise<stri
     symDecrypt(d4lKey, convertBase64ToArrayBufferView(base64String))
         .then(convertArrayBufferViewToString);
 
-const symDecryptObject = async (d4lKey: D4LKey, base64String: b64): Promise<object> =>
+const symDecryptObject = async (d4lKey: D4LKey, base64String: b64): Promise<Record<string, unknown>> =>
     symDecryptString(d4lKey, base64String).then(JSON.parse);
 
 

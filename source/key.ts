@@ -25,42 +25,42 @@ enum D4LKeyTypes {
     APP_PUBLIC_KEY = 'apub',
     USER_PRIVATE_KEY = 'upriv',
     USER_PUBLIC_KEY = 'upub',
-};
+}
 
-enum AsymKeyTypes  {
+enum AsymKeyTypes {
     APP = 'app',
     USER = 'user',
-};
+}
 
 export type b64 = string;
 export type hex = string;
 
 export type D4LKeySym = {
     v: number;
-    t: D4LKeyTypes.COMMON_KEY | D4LKeyTypes.DATA_KEY | D4LKeyTypes.MAIN_KEY | D4LKeyTypes.PASSWORD_KEY | D4LKeyTypes.ATTACHMENT_KEY| D4LKeyTypes.TAG_ENCRYPTION_KEY;
+    t: D4LKeyTypes.COMMON_KEY | D4LKeyTypes.DATA_KEY | D4LKeyTypes.MAIN_KEY | D4LKeyTypes.PASSWORD_KEY | D4LKeyTypes.ATTACHMENT_KEY | D4LKeyTypes.TAG_ENCRYPTION_KEY;
     sym: b64;
-  };
+};
 
-  export type D4LKeyPrivate = {
+export type D4LKeyPrivate = {
     v: number;
     t: D4LKeyTypes.APP_PRIVATE_KEY | D4LKeyTypes.USER_PRIVATE_KEY;
     priv: b64;
-  };
+};
 
-  export type D4LKeyPublic = {
+export type D4LKeyPublic = {
     v: number;
     t: D4LKeyTypes.APP_PUBLIC_KEY | D4LKeyTypes.USER_PUBLIC_KEY;
     pub: b64;
-  };
+};
 
-  export type D4LKey = D4LKeySym | D4LKeyPrivate | D4LKeyPublic
+export type D4LKey = D4LKeySym | D4LKeyPrivate | D4LKeyPublic
 
-  export const isD4LKey = (key: any): key is D4LKey => key.t && key.v && (key.priv || key.pub || key.sym);
+export const isD4LKey = (key: any): key is D4LKey => key.t && key.v && (key.priv || key.pub || key.sym);
 
-  export type D4LAsymKeysPair = {
+export type D4LAsymKeysPair = {
     publicKey: D4LKeyPublic,
     privateKey: D4LKeyPrivate,
- }
+}
 
 // EXPORT
 
@@ -108,41 +108,41 @@ const exportSymKeyToHexadecimal = (cryptoKey: CryptoKey): Promise<hex> =>
 
 const exportKey = (key: CryptoKey, type: D4LKeyTypes): Promise<D4LKey> => {
     switch (type) {
-    case D4LKeyTypes.COMMON_KEY:
-    case D4LKeyTypes.DATA_KEY:
-    case D4LKeyTypes.ATTACHMENT_KEY:
-    case D4LKeyTypes.TAG_ENCRYPTION_KEY:
-    case D4LKeyTypes.PASSWORD_KEY:
-        return exportSymKeyToBase64(key)
-            .then(base64 => ({
+        case D4LKeyTypes.COMMON_KEY:
+        case D4LKeyTypes.DATA_KEY:
+        case D4LKeyTypes.ATTACHMENT_KEY:
+        case D4LKeyTypes.TAG_ENCRYPTION_KEY:
+        case D4LKeyTypes.PASSWORD_KEY:
+            return exportSymKeyToBase64(key)
+                .then(base64 => ({
+                    t: type,
+                    v: KEY_VERSION,
+                    sym: base64,
+                }));
+        case D4LKeyTypes.USER_PRIVATE_KEY:
+        case D4LKeyTypes.APP_PRIVATE_KEY:
+            return exportPrivateKeyToPKCS8(key)
+                .then(base64 => ({
+                    t: type,
+                    v: KEY_VERSION,
+                    priv: base64,
+                }));
+        case D4LKeyTypes.USER_PUBLIC_KEY:
+        case D4LKeyTypes.APP_PUBLIC_KEY:
+            return exportPublicKeyToSPKI(key)
+                .then(base64 => ({
+                    t: type,
+                    v: KEY_VERSION,
+                    pub: base64,
+                }));
+        case D4LKeyTypes.MAIN_KEY:
+            return exportSymKeyToHexadecimal(key).then(hexadecimal => ({
                 t: type,
                 v: KEY_VERSION,
-                sym: base64,
+                sym: hexadecimal,
             }));
-    case D4LKeyTypes.USER_PRIVATE_KEY:
-    case D4LKeyTypes.APP_PRIVATE_KEY:
-        return exportPrivateKeyToPKCS8(key)
-            .then(base64 => ({
-                t: type,
-                v: KEY_VERSION,
-                priv: base64,
-            }));
-    case D4LKeyTypes.USER_PUBLIC_KEY:
-    case D4LKeyTypes.APP_PUBLIC_KEY:
-        return exportPublicKeyToSPKI(key)
-            .then(base64 => ({
-                t: type,
-                v: KEY_VERSION,
-                pub: base64,
-            }));
-    case D4LKeyTypes.MAIN_KEY:
-        return exportSymKeyToHexadecimal(key).then(hexadecimal => ({
-            t: type,
-            v: KEY_VERSION,
-            sym: hexadecimal,
-        }));
-    default:
-        throw new Error(`invalid key type: ${type}`);
+        default:
+            throw new Error(`invalid key type: ${type}`);
     }
 };
 
@@ -215,23 +215,23 @@ const importSymKeyFromHexadecimal = (hexadecimal: hex, algorithm = AES_GCM): Pro
 
 const importKey = (key: D4LKey): Promise<CryptoKey> => {
     switch (key.t) {
-    case D4LKeyTypes.COMMON_KEY:
-    case D4LKeyTypes.DATA_KEY:
-    case D4LKeyTypes.ATTACHMENT_KEY:
-    case D4LKeyTypes.PASSWORD_KEY:
-        return importSymKeyFromBase64(key.sym);
-    case D4LKeyTypes.TAG_ENCRYPTION_KEY:
-        return importSymKeyFromBase64(key.sym, AES_CBC);
-    case D4LKeyTypes.USER_PRIVATE_KEY:
-    case D4LKeyTypes.APP_PRIVATE_KEY:
-        return importPrivateKeyFromPKCS8(key.priv);
-    case D4LKeyTypes.USER_PUBLIC_KEY:
-    case D4LKeyTypes.APP_PUBLIC_KEY:
-        return importPublicKeyFromSPKI(key.pub);
-    case D4LKeyTypes.MAIN_KEY:
-        return importSymKeyFromHexadecimal(key.sym);
-    default:
-        throw new Error('invalid key type');
+        case D4LKeyTypes.COMMON_KEY:
+        case D4LKeyTypes.DATA_KEY:
+        case D4LKeyTypes.ATTACHMENT_KEY:
+        case D4LKeyTypes.PASSWORD_KEY:
+            return importSymKeyFromBase64(key.sym);
+        case D4LKeyTypes.TAG_ENCRYPTION_KEY:
+            return importSymKeyFromBase64(key.sym, AES_CBC);
+        case D4LKeyTypes.USER_PRIVATE_KEY:
+        case D4LKeyTypes.APP_PRIVATE_KEY:
+            return importPrivateKeyFromPKCS8(key.priv);
+        case D4LKeyTypes.USER_PUBLIC_KEY:
+        case D4LKeyTypes.APP_PUBLIC_KEY:
+            return importPublicKeyFromSPKI(key.pub);
+        case D4LKeyTypes.MAIN_KEY:
+            return importSymKeyFromHexadecimal(key.sym);
+        default:
+            throw new Error('invalid key type');
     }
 };
 
@@ -342,8 +342,8 @@ const generateAsymKeyPair = async (type: AsymKeyTypes): Promise<D4LAsymKeysPair>
             exportKey(
                 keyPair.privateKey,
                 type === AsymKeyTypes.APP ?
-                D4LKeyTypes.APP_PRIVATE_KEY :
-                D4LKeyTypes.USER_PRIVATE_KEY) as Promise<D4LKeyPrivate>,
+                    D4LKeyTypes.APP_PRIVATE_KEY :
+                    D4LKeyTypes.USER_PRIVATE_KEY) as Promise<D4LKeyPrivate>,
         ]))
         .then(([publicKey, privateKey]) => ({ publicKey, privateKey }));
 
