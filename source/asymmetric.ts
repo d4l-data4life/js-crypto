@@ -19,7 +19,7 @@ import {
  * @param {Uint8Array} data that will be encrypted
  * @returns {Promise<Uint8Array>} Resolves to encrypted data as an ArrayBufferView
  */
-const asymEncrypt = async (d4lPublicKey: D4LKeyPublic, data: Uint8Array): Promise<Uint8Array> =>
+const asymEncrypt = (d4lPublicKey: D4LKeyPublic, data: Uint8Array): Promise<Uint8Array> =>
     importKey(d4lPublicKey)
         .then(key => crypto.subtle.encrypt(
             {
@@ -28,7 +28,7 @@ const asymEncrypt = async (d4lPublicKey: D4LKeyPublic, data: Uint8Array): Promis
         ))
         .then(result => new Uint8Array(result));
 
-const asymEncryptString = async (publicKeySPKI: D4LKeyPublic, string: string): Promise<b64> =>
+const asymEncryptString = (publicKeySPKI: D4LKeyPublic, string: string): Promise<b64> =>
     asymEncrypt(publicKeySPKI, convertStringToArrayBufferView(string))
         .then(convertArrayBufferViewToBase64);
 
@@ -41,7 +41,7 @@ const asymEncryptString = async (publicKeySPKI: D4LKeyPublic, string: string): P
  * @param {Uint8Array} data
  * @returns {Promise<Uint8Array>} Resolves to decrypted data as an ArrayBufferView
  */
-const asymDecrypt = async (privateKey: D4LKeyPrivate | CryptoKey, data: Uint8Array): Promise<Uint8Array> => {
+const asymDecrypt = (privateKey: D4LKeyPrivate | CryptoKey, data: Uint8Array): Promise<Uint8Array> => {
     let outputPrivateKey: Promise<CryptoKey>;
     if (isD4LKey(privateKey)) {
         // If the privateKey is a D4LKey, transform it into a Promise<CryptoKey>.
@@ -59,7 +59,7 @@ const asymDecrypt = async (privateKey: D4LKeyPrivate | CryptoKey, data: Uint8Arr
         .then(result => new Uint8Array(result));
 };
 
-const asymDecryptString = async (privateKey: D4LKeyPrivate | CryptoKey, base64String: b64): Promise<b64> =>
+const asymDecryptString = (privateKey: D4LKeyPrivate | CryptoKey, base64String: b64): Promise<b64> =>
     asymDecrypt(privateKey, convertBase64ToArrayBufferView(base64String))
         .then(convertArrayBufferViewToString);
 

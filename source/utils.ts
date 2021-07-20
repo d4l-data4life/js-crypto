@@ -29,7 +29,7 @@ const convertObjectToArrayBufferView = (object: Record<string, unknown>): Uint8A
 
 const convertArrayBufferViewToString = (bytes: Uint8Array): string => textDecoder.decode(bytes);
 
-const convertBlobToArrayBufferView = async (blob: Blob): Promise<Uint8Array> =>
+const convertBlobToArrayBufferView = (blob: Blob): Promise<Uint8Array> =>
     new Promise((resolve) => {
         const fileReader = new FileReader();
         fileReader.onload = (event) => {

@@ -155,7 +155,7 @@ const exportKey = (key: CryptoKey, type: D4LKeyTypes): Promise<D4LKey> => {
  * @param {b64} PKCS8 - the base64 encoded PKCS8 string
  * @returns {Promise<CryptoKey>} Resolves to the private key as a CryptoKey.
  */
-const importPrivateKeyFromPKCS8 = async (PKCS8: b64): Promise<CryptoKey> =>
+const importPrivateKeyFromPKCS8 = (PKCS8: b64): Promise<CryptoKey> =>
     crypto.subtle.importKey(
         'pkcs8',
         convertBase64ToArrayBufferView(PKCS8),
@@ -170,7 +170,7 @@ const importPrivateKeyFromPKCS8 = async (PKCS8: b64): Promise<CryptoKey> =>
  * @param {b64} SPKI - the base64 encoded SPKI
  * @returns {Promise<CryptoKey>} Resolves to the public key as a CryptoKey.
  */
-const importPublicKeyFromSPKI = async (SPKI: b64): Promise<CryptoKey> => {
+const importPublicKeyFromSPKI = (SPKI: b64): Promise<CryptoKey> => {
     return crypto.subtle.importKey(
         'spki',
         convertBase64ToArrayBufferView(SPKI),
@@ -323,7 +323,7 @@ const deriveKey = (masterKey: Uint8Array, salt: Uint8Array = new Uint8Array(16),
  * @param {AsymKeyTypes} type - type of the key pair (app/user)
  * @returns {Promise<D4LAsymKeysPair>} Resolves to an object containing a public and a private key as d4lKey objects
  */
-const generateAsymKeyPair = async (type: AsymKeyTypes): Promise<D4LAsymKeysPair> =>
+const generateAsymKeyPair = (type: AsymKeyTypes): Promise<D4LAsymKeysPair> =>
     // Parameters:
     // 1. Asymmetric Encryption algorithm name and its requirements
     // 2. Boolean indicating extractable which indicates whether or not the raw keying

@@ -22,7 +22,7 @@ const TEK_IV = new Uint8Array(16).fill(0);
  * @param {Uint8Array} data that should be encrypted
  * @returns {Promise<Uint8Array>} Resolves to encrypted data as an ArrayBufferView
  */
-const symEncrypt = async (d4lKey: D4LKey, data: Uint8Array): Promise<Uint8Array> => {
+const symEncrypt = (d4lKey: D4LKey, data: Uint8Array): Promise<Uint8Array> => {
     const isTagEncryption = d4lKey.t === D4LKeyTypes.TAG_ENCRYPTION_KEY;
     const iv = isTagEncryption ?
         TEK_IV :
@@ -62,7 +62,7 @@ const symEncryptBlob = (d4lKey: D4LKey, blob: Blob): Promise<Uint8Array> =>
  * @param {Uint8Array} ivData encrypted data that should be decrypted
  * @returns {Promise<Uint8Array>} Resolves to plain data as an ArrayBufferView
  */
-const symDecrypt = async (d4lKey: D4LKey, ivData: Uint8Array): Promise<Uint8Array> => {
+const symDecrypt = (d4lKey: D4LKey, ivData: Uint8Array): Promise<Uint8Array> => {
     const isTagDecryption = d4lKey.t === D4LKeyTypes.TAG_ENCRYPTION_KEY;
     const iv = isTagDecryption ? TEK_IV : ivData.slice(0, 12);
     const data = isTagDecryption ? ivData : ivData.slice(12, ivData.length);
@@ -76,11 +76,11 @@ const symDecrypt = async (d4lKey: D4LKey, ivData: Uint8Array): Promise<Uint8Arra
         .then(result => new Uint8Array(result));
 };
 
-const symDecryptString = async (d4lKey: D4LKey, base64String: b64): Promise<string> =>
+const symDecryptString = (d4lKey: D4LKey, base64String: b64): Promise<string> =>
     symDecrypt(d4lKey, convertBase64ToArrayBufferView(base64String))
         .then(convertArrayBufferViewToString);
 
-const symDecryptObject = async (d4lKey: D4LKey, base64String: b64): Promise<Record<string, unknown>> =>
+const symDecryptObject = (d4lKey: D4LKey, base64String: b64): Promise<Record<string, unknown>> =>
     symDecryptString(d4lKey, base64String).then(JSON.parse);
 
 

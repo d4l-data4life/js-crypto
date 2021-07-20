@@ -42,7 +42,7 @@ import * as algorithms from './algorithms';
 
 const crypto = window.crypto || (window['msCrypto'] as Crypto);
 
-const hash = (message: ArrayBuffer | SharedArrayBuffer, alg = 'SHA-512'): Promise<b64> => crypto.subtle.digest(alg, Buffer.from(message))
+const hash = (message: ArrayBuffer, alg = 'SHA-512'): Promise<b64> => crypto.subtle.digest(alg, Buffer.from(message))
     .then(res => Buffer.from(res).toString('base64'));
 
 const newDerivationSalt = (): Uint8Array =>
