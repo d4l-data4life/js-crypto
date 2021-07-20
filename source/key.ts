@@ -1,4 +1,4 @@
-import pbkdf2 from 'pbkdf2';
+import * as pbkdf2 from 'pbkdf2';
 
 import { AES_CBC, AES_GCM, RSA_OAEP } from './algorithms';
 import {
@@ -27,7 +27,7 @@ enum D4LKeyTypes {
     USER_PUBLIC_KEY = 'upub',
 }
 
-enum AsymKeyTypes {
+export enum AsymKeyTypes {
     APP = 'app',
     USER = 'user',
 }

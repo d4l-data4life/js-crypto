@@ -1,5 +1,6 @@
 import {
     b64,
+    D4LKeyPrivate,
     D4LKeyPublic,
     importKey,
     isD4LKey,
@@ -36,11 +37,11 @@ const asymEncryptString = async (publicKeySPKI: D4LKeyPublic, string: string): P
  * It is necessary to offer function overloading to support the usage of
  * unexportable CryptoKeys, which obviously can't / don't need to be imported.
  *
- * @param {D4LKeyPublic | CryptoKey} privateKey
+ * @param {D4LKeyPrivate | CryptoKey} privateKey
  * @param {Uint8Array} data
  * @returns {Promise<Uint8Array>} Resolves to decrypted data as an ArrayBufferView
  */
-const asymDecrypt = async (privateKey: D4LKeyPublic | CryptoKey, data: Uint8Array): Promise<Uint8Array> => {
+const asymDecrypt = async (privateKey: D4LKeyPrivate | CryptoKey, data: Uint8Array): Promise<Uint8Array> => {
     let outputPrivateKey: Promise<CryptoKey>;
     if (isD4LKey(privateKey)) {
         // If the privateKey is a D4LKey, transform it into a Promise<CryptoKey>.
@@ -58,7 +59,7 @@ const asymDecrypt = async (privateKey: D4LKeyPublic | CryptoKey, data: Uint8Arra
         .then(result => new Uint8Array(result));
 };
 
-const asymDecryptString = async (privateKey: D4LKeyPublic | CryptoKey, base64String: b64): Promise<b64> =>
+const asymDecryptString = async (privateKey: D4LKeyPrivate | CryptoKey, base64String: b64): Promise<b64> =>
     asymDecrypt(privateKey, convertBase64ToArrayBufferView(base64String))
         .then(convertArrayBufferViewToString);
 

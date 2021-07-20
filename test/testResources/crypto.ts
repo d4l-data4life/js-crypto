@@ -42,7 +42,7 @@ const cipherObjectBase64 = 'yTDjX4kxEXahVelDGU4IvIT+vPmY9tHWEnFZMZRMRlv7ds3nKP9w
 // plainObject encrypted with commonKey
 const commonCipherObjectBase64 = '4W8dp9DRPEFufpXvJx9/2dUu6G4VSh0vSq2QgrbBJQ/iq7EnNKeZU075B40I0f+YfDP0jR3Y5QRAOOucMW8CEtJtAplk';
 
-const plainBlob = new Blob([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9]);
+const plainBlob = new Blob(['3', '1', '4', '1', '5', '9', '2', '6', '5', '3', '5', '8', '9', '7', '9']);
 const plainBlobArray = new Uint8Array([51, 49, 52, 49, 53, 57, 50, 54, 53, 51, 53, 56, 57, 55, 57]);
 // plainBlob encrypted with tagEncryptionKey
 const cipherBlobArray = new Uint8Array([117, 189, 43, 51, 209, 83, 136, 141, 117, 198, 145, 19,

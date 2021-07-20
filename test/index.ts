@@ -7,6 +7,7 @@ import * as hcCrypto from '../source/index';
 describe('index.js', () => {
     it('exports the expected methods', () => {
         expect(Object.keys(hcCrypto).sort()).to.deep.equal([
+            'D4LKeyTypes',
             'algorithms',
             'asymDecrypt',
             'asymDecryptString',
@@ -30,7 +31,6 @@ describe('index.js', () => {
             'importPrivateKeyFromPKCS8',
             'importPublicKeyFromSPKI',
             'importSymKeyFromBase64',
-            'D4LKeyTypes',
             'newDerivationSalt',
             'symDecrypt',
             'symDecryptObject',

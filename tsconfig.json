@@ -16,7 +16,8 @@
         "resolveJsonModule": true,
     },
     "include": [
-        "source"
+        "source",
+        "test"
     ],
     "exclude": [
         "node_modules"

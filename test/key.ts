@@ -13,6 +13,7 @@ import {
 
     algorithms,
 } from '../source/index';
+import { AsymKeyTypes } from '../source/key';
 
 import {
     defaultMasterKey,
@@ -71,7 +72,7 @@ describe('key.js', () => {
 
     describe('generateAsymKeyPair', () => {
         it('should generate a keypair in the GC key format', (done) => {
-            generateAsymKeyPair(D4LKeyTypes.USER)
+            generateAsymKeyPair(AsymKeyTypes.USER)
                 .then(({ publicKey, privateKey }) => {
                     expect(Object.keys(publicKey)).to.deep.equal(['t', 'v', 'pub']);
                     expect(publicKey.t).to.equal('upub');
@@ -85,8 +86,8 @@ describe('key.js', () => {
 
         it('should behave non deterministically', (done) => {
             Promise.all([
-                generateAsymKeyPair(D4LKeyTypes.USER),
-                generateAsymKeyPair(D4LKeyTypes.USER),
+                generateAsymKeyPair(AsymKeyTypes.USER),
+                generateAsymKeyPair(AsymKeyTypes.USER),
             ])
                 .then((keyPairs) => {
                     expect(keyPairs[0]).not.to.deep.equal(keyPairs[1]);
@@ -222,7 +223,7 @@ describe('key.js', () => {
 
         it('is able to import a public userKey (asym)', (done) => {
             crypto.subtle.importKey('jwk', asymPublicJWK, algorithms.RSA_OAEP, true, ['encrypt'])
-                .then(cryptoKey => exportKey(cryptoKey, D4LKeyTypes.USER.PUBLIC_KEY))
+                .then(cryptoKey => exportKey(cryptoKey, D4LKeyTypes.USER_PUBLIC_KEY))
                 .then((GCKey) => {
                     expect(GCKey).to.deep.equal(asymUserPublicKey);
                     done();
@@ -232,7 +233,7 @@ describe('key.js', () => {
 
         it('is able to export a private userKey (asym)', (done) => {
             crypto.subtle.importKey('jwk', asymPrivateJWK, algorithms.RSA_OAEP, true, ['decrypt'])
-                .then(cryptoKey => exportKey(cryptoKey, D4LKeyTypes.USER.PRIVATE_KEY))
+                .then(cryptoKey => exportKey(cryptoKey, D4LKeyTypes.USER_PRIVATE_KEY))
                 .then((GCKey) => {
                     expect(GCKey).to.deep.equal(asymUserPrivateKey);
                     done();

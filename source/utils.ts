@@ -1,4 +1,4 @@
-import base64js from 'base64-js';
+import * as base64js from 'base64-js';
 import { b64, hex } from './key';
 
 const textEncoder = new TextEncoder();
