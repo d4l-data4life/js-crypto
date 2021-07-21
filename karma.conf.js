@@ -6,19 +6,13 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'source/**/*.js',
-            'test/**/*.js',
+            'source/**/*.ts',
+            'test/**/*.ts',
         ],
 
         preprocessors: {
-            'source/**/*.js': ['browserify'],
-            'test/**/*.js': ['browserify'],
-        },
-        browserify: {
-            debug: true,
-            transform: [
-                ['babelify', { presets: ['@babel/preset-env'] }],
-            ],
+            'source/**/*.ts': ['karma-typescript'],
+            'test/**/*.ts': ['karma-typescript'],
         },
 
         // frameworks to use
@@ -27,6 +21,7 @@ module.exports = function (config) {
             'mocha',
             'chai',
             'browserify',
+            'karma-typescript'
         ],
 
         // test results reporter to use

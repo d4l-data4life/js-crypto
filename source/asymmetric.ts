@@ -1,5 +1,9 @@
 import {
+    b64,
+    D4LKeyPrivate,
+    D4LKeyPublic,
     importKey,
+    isD4LKey,
 } from './key';
 import {
     convertStringToArrayBufferView,
@@ -11,37 +15,34 @@ import {
 /**
  * Asymmetric encryption of data with d4lKey
  *
- * @param {Object} d4lPublicKey - d4lKey representation of the public key
- * @param {ArrayBufferView} data that will be encrypted
- * @returns {Promise} Resolves to encrypted data as an ArrayBufferView
+ * @param {D4LKeyPublic} d4lPublicKey - d4lKey representation of the public key
+ * @param {Uint8Array} data that will be encrypted
+ * @returns {Promise<Uint8Array>} Resolves to encrypted data as an ArrayBufferView
  */
-const asymEncrypt = (d4lPublicKey, data) =>
+const asymEncrypt = (d4lPublicKey: D4LKeyPublic, data: Uint8Array): Promise<Uint8Array> =>
     importKey(d4lPublicKey)
         .then(key => crypto.subtle.encrypt(
             {
                 name: key.algorithm.name,
-                hash: { name: 'SHA-256' },
             }, key, data,
         ))
         .then(result => new Uint8Array(result));
 
-const asymEncryptString = (publicKeySPKI, string) =>
+const asymEncryptString = (publicKeySPKI: D4LKeyPublic, string: string): Promise<b64> =>
     asymEncrypt(publicKeySPKI, convertStringToArrayBufferView(string))
         .then(convertArrayBufferViewToBase64);
-
-const isD4LKey = key => key.t && key.v && (key.priv || key.pub || key.sym);
 
 /**
  * Asymmetric decryption of data with D4LKey or CryptoKey.
  * It is necessary to offer function overloading to support the usage of
  * unexportable CryptoKeys, which obviously can't / don't need to be imported.
  *
- * @param {Object} privateKey
- * @param {ArrayBufferView} data
- * @returns {Promise} Resolves to decrypted data as an ArrayBufferView
+ * @param {D4LKeyPrivate | CryptoKey} privateKey
+ * @param {Uint8Array} data
+ * @returns {Promise<Uint8Array>} Resolves to decrypted data as an ArrayBufferView
  */
-const asymDecrypt = (privateKey, data) => {
-    let outputPrivateKey;
+const asymDecrypt = (privateKey: D4LKeyPrivate | CryptoKey, data: Uint8Array): Promise<Uint8Array> => {
+    let outputPrivateKey: Promise<CryptoKey>;
     if (isD4LKey(privateKey)) {
         // If the privateKey is a D4LKey, transform it into a Promise<CryptoKey>.
         outputPrivateKey = importKey(privateKey);
@@ -54,12 +55,11 @@ const asymDecrypt = (privateKey, data) => {
         .then(key => crypto.subtle.decrypt(
             {
                 name: key.algorithm.name,
-                hash: { name: 'SHA-256' },
             }, key, data))
         .then(result => new Uint8Array(result));
 };
 
-const asymDecryptString = (privateKey, base64String) =>
+const asymDecryptString = (privateKey: D4LKeyPrivate | CryptoKey, base64String: b64): Promise<b64> =>
     asymDecrypt(privateKey, convertBase64ToArrayBufferView(base64String))
         .then(convertArrayBufferViewToString);
 

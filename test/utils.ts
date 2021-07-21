@@ -94,7 +94,8 @@ describe('utils.js', () => {
 
         it('should return a TypeError if the input is not a string', () => {
             try {
-                convertHexadecimalToArrayBuffer(123);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                convertHexadecimalToArrayBuffer(123 as any);
             } catch (error) {
                 expect(error.name).to.eql('TypeError');
                 expect(error.message).to.eql('Expected input to be a string');
