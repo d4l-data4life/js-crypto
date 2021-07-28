@@ -18,6 +18,7 @@ const KEYTYPES = {
     COMMON_KEY: 'ck',
     DATA_KEY: 'dk',
     MAIN_KEY: 'mk',
+    RECOVERY_KEY: 'rk',
     PASSWORD_KEY: 'pk',
     ATTACHMENT_KEY: 'ak',
     TAG_ENCRYPTION_KEY: 'tek',
@@ -105,6 +106,7 @@ const exportKey = (key, type) => {
                 pub: base64,
             }));
     case KEYTYPES.MAIN_KEY:
+    case KEYTYPES.RECOVERY_KEY:
         return exportSymKeyToHexadecimal(key).then(hexadecimal => ({
             t: type,
             v: KEYVERSION,
@@ -199,6 +201,7 @@ const importKey = (key) => {
     case KEYTYPES.APP.PUBLIC_KEY:
         return importPublicKeyFromSPKI(key.pub);
     case KEYTYPES.MAIN_KEY:
+    case KEYTYPES.RECOVERY_KEY:
         return importSymKeyFromHexadecimal(key.sym);
     default:
         throw new Error('invalid key type');
