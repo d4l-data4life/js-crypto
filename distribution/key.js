@@ -44,6 +44,7 @@ var KEYTYPES = {
   COMMON_KEY: 'ck',
   DATA_KEY: 'dk',
   MAIN_KEY: 'mk',
+  RECOVERY_KEY: 'rk',
   PASSWORD_KEY: 'pk',
   ATTACHMENT_KEY: 'ak',
   TAG_ENCRYPTION_KEY: 'tek',
@@ -153,6 +154,7 @@ var exportKey = function exportKey(key, type) {
       });
 
     case KEYTYPES.MAIN_KEY:
+    case KEYTYPES.RECOVERY_KEY:
       return exportSymKeyToHexadecimal(key).then(function (hexadecimal) {
         return {
           t: type,
@@ -249,6 +251,7 @@ var importKey = function importKey(key) {
       return importPublicKeyFromSPKI(key.pub);
 
     case KEYTYPES.MAIN_KEY:
+    case KEYTYPES.RECOVERY_KEY:
       return importSymKeyFromHexadecimal(key.sym);
 
     default:
