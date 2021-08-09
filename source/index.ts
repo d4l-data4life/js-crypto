@@ -40,7 +40,8 @@ import {
 } from './symmetric';
 import * as algorithms from './algorithms';
 
-const crypto = window.crypto || (window['msCrypto'] as Crypto);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const crypto = window.crypto || ((window as any).msCrypto as Crypto);
 
 const hash = (message: ArrayBuffer, alg = 'SHA-512'): Promise<b64> => crypto.subtle.digest(alg, Buffer.from(message))
     .then(res => Buffer.from(res).toString('base64'));

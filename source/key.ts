@@ -14,6 +14,9 @@ const KEY_VERSION = 1;
 const ENCRYPT = 'encrypt';
 const DECRYPT = 'decrypt';
 
+const EXTRACTABLE = true;
+const UNEXTRACTABLE = false;
+
 enum D4LKeyTypes {
     COMMON_KEY = 'ck',
     DATA_KEY = 'dk',
@@ -160,22 +163,22 @@ const importPrivateKeyFromPKCS8 = (PKCS8: b64): Promise<CryptoKey> =>
         'pkcs8',
         convertBase64ToArrayBufferView(PKCS8),
         RSA_OAEP,
-        false,
+        UNEXTRACTABLE,
         [DECRYPT],
     );
 
 /**
  * Import public CryptoKey from base64 encoded SPKI.
  *
- * @param {b64} SPKI - the base64 encoded SPKI
+ * @param {b64} spki - the base64 encoded SPKI
  * @returns {Promise<CryptoKey>} Resolves to the public key as a CryptoKey.
  */
-const importPublicKeyFromSPKI = (SPKI: b64): Promise<CryptoKey> => {
+const importPublicKeyFromSPKI = (spki: b64): Promise<CryptoKey> => {
     return crypto.subtle.importKey(
         'spki',
-        convertBase64ToArrayBufferView(SPKI),
+        convertBase64ToArrayBufferView(spki),
         RSA_OAEP,
-        true,
+        EXTRACTABLE,
         [ENCRYPT],
     );
 };
@@ -193,7 +196,7 @@ const importSymKeyFromBase64 = (base64Key: b64, algorithm = AES_GCM): Promise<Cr
         'raw',
         convertBase64ToArrayBufferView(base64Key),
         algorithm,
-        false,
+        UNEXTRACTABLE,
         [ENCRYPT, DECRYPT],
     );
 
@@ -210,7 +213,7 @@ const importSymKeyFromHexadecimal = (hexadecimal: hex, algorithm = AES_GCM): Pro
         'raw',
         convertHexadecimalToArrayBuffer(hexadecimal),
         algorithm,
-        false,
+        UNEXTRACTABLE,
         [DECRYPT, ENCRYPT],
     );
 
@@ -246,15 +249,9 @@ const importKey = (key: D4LKey): Promise<CryptoKey> => {
  * @returns {Promise<D4LKey>} Resolves to a symmetric key as a d4lKey object
  */
 const generateSymKey = (type: D4LKeyTypes, algorithm: AesKeyGenParams | HmacKeyGenParams | Pbkdf2Params = AES_GCM): Promise<D4LKey> =>
-    // Parameters:
-    // 1. Symmetric Encryption algorithm name and its requirements
-    // 2. Boolean indicating extractable. which indicates whether or not the raw keying
-    //    material may be exported by the application
-    //    (http://www.w3.org/TR/WebCryptoAPI/#dfn-CryptoKey-slot-extractable)
-    // 3. Usage of the key. (http://www.w3.org/TR/WebCryptoAPI/#cryptokey-interface-types)
     crypto.subtle.generateKey(
         algorithm,
-        true,
+        EXTRACTABLE,
         [ENCRYPT, DECRYPT],
     )
         .then(key => exportKey(key, type));
@@ -298,7 +295,7 @@ const deriveKey = (masterKey: Uint8Array, salt: Uint8Array = new Uint8Array(16),
         'raw',
         masterKey,
         { name: 'PBKDF2' },
-        false,
+        UNEXTRACTABLE,
         ['deriveKey', 'deriveBits'],
     )
         .then(key =>
@@ -311,7 +308,7 @@ const deriveKey = (masterKey: Uint8Array, salt: Uint8Array = new Uint8Array(16),
                 },
                 key,
                 algorithm,
-                true,
+                EXTRACTABLE,
                 [ENCRYPT, DECRYPT],
             ),
         )
@@ -324,15 +321,9 @@ const deriveKey = (masterKey: Uint8Array, salt: Uint8Array = new Uint8Array(16),
  * @returns {Promise<D4LAsymKeysPair>} Resolves to an object containing a public and a private key as d4lKey objects
  */
 const generateAsymKeyPair = (type: AsymKeyTypes): Promise<D4LAsymKeysPair> =>
-    // Parameters:
-    // 1. Asymmetric Encryption algorithm name and its requirements
-    // 2. Boolean indicating extractable which indicates whether or not the raw keying
-    //    material may be exported by the application
-    //    (http://www.w3.org/TR/WebCryptoAPI/#dfn-CryptoKey-slot-extractable)
-    // 3. Usage of the keys. (http://www.w3.org/TR/WebCryptoAPI/#cryptokey-interface-types)
     crypto.subtle.generateKey(
         RSA_OAEP,
-        true,
+        EXTRACTABLE,
         [ENCRYPT, DECRYPT],
     )
         .then(keyPair => Promise.all([
