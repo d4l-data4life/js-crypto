@@ -22,6 +22,7 @@ enum D4LKeyTypes {
     DATA_KEY = 'dk',
     MAIN_KEY = 'mk',
     PASSWORD_KEY = 'pk',
+    RECOVERY_KEY = 'rk',
     ATTACHMENT_KEY = 'ak',
     TAG_ENCRYPTION_KEY = 'tek',
     APP_PRIVATE_KEY = 'apriv',
