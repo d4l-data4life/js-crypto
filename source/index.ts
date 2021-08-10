@@ -12,7 +12,8 @@ import {
     exportPublicKeyToSPKI,
     importSymKeyFromBase64,
     exportSymKeyToBase64,
-    KEYTYPES,
+    D4LKeyTypes,
+    b64,
 } from './key';
 import {
     convertStringToArrayBufferView,
@@ -39,12 +40,13 @@ import {
 } from './symmetric';
 import * as algorithms from './algorithms';
 
-const crypto = window.crypto || window.msCrypto;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const crypto = window.crypto || ((window as any).msCrypto as Crypto);
 
-const hash = (message, alg = 'SHA-512') => crypto.subtle.digest(alg, Buffer.from(message))
+const hash = (message: ArrayBuffer, alg = 'SHA-512'): Promise<b64> => crypto.subtle.digest(alg, Buffer.from(message))
     .then(res => Buffer.from(res).toString('base64'));
 
-const newDerivationSalt = () =>
+const newDerivationSalt = (): Uint8Array =>
     crypto.getRandomValues(new Uint8Array(16));
 
 export {
@@ -59,7 +61,7 @@ export {
     exportPublicKeyToSPKI,
     importSymKeyFromBase64,
     exportSymKeyToBase64,
-    KEYTYPES as keyTypes,
+    D4LKeyTypes as D4LKeyTypes,
 
     symEncrypt,
     symEncryptString,
