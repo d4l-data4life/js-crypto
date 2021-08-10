@@ -5,7 +5,7 @@
     "main": "distribution/index.js",
     "scripts": {
         "build": "babel source --out-dir distribution",
-        "lint": "eslint --ext .ts source/ ",
+        "lint": "eslint --ext .ts ./source ",
         "test": "npm run lint && npm run karma",
         "karma": "karma start --single-run",
         "karma:watch": "karma start"
